@@ -1,0 +1,177 @@
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function checkLine(testedLine, start, end, lineN) {
+                if (testedLine) {
+                    for (let j = start; j <= end; j++) {
+                        if (testedLine[j] === "*") {
+                            return {
+                                coords: j,
+                                lineN: lineN
+                            };
+                        }
+                    }
+                }
+            }
+
+            function extractPartNumbers() {
+                var inputSrc = document.getElementById('input').value;
+                let gears = [];
+                let sum = 0;
+
+                const lines = inputSrc.split('\n');
+
+                // Process each line
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+
+                    for (let j = 0; j < line.length; j++) {
+                        let start = j;
+                        if (/\d/.test(line[j])) {
+                            // Accumulate consecutive digits until a non-digit is encountered
+                            while (j < line.length - 1 && /\d/.test(line[j + 1])) {
+                                j++;
+                            }
+                            let end = j;
+
+                            let value = parseInt(line.substring(start, end + 1));
+
+                            if (start > 0) {
+                                start--;
+                            }
+                            if (end < line.length - 1) {
+                                end++;
+                            }
+
+                            let gear_details = [];
+
+                            checkForNonFullstops(lines[i], start, end, i) ? gear_details.push(checkForNonFullstops(lines[i], start, end, i)) : null;
+
+                            const gearDetailsPrev = checkLine(lines[i - 1], start, end, i - 1);
+                            const gearDetailsNext = checkLine(lines[i + 1], start, end, i + 1);
+
+                            gearDetailsPrev ? gear_details.push(gearDetailsPrev) : null;
+                            gearDetailsNext ? gear_details.push(gearDetailsNext) : null;
+
+                            if (gear_details && gear_details.length > 0) {
+                                //Store the number and its associated gear or gears details
+                                gears.push({
+                                    value: value,
+                                    gear_details: gear_details
+                                });
+                            }
+                        }
+                    }
+                }
+                //We now look at the gears object and group the valus depending on their gear details.
+                gears = groupByGearCoordinates(gears);
+                console.log(gears);
+
+                for (let gearObject of gears) {
+                    let key = Object.keys(gearObject)[0]; // Get the key of the object
+                    let values = gearObject[key]; // Get the associated array of values
+
+                    // Multiply the values and add to the sum
+                    let product = values[0] * values[1];
+                    sum += product;
+                }
+
+                displayResult(sum);
+            }
+
+            function checkForNonFullstops(testedLine, start, end, lineN) {
+                if (/\*/.test(testedLine[start]) && /\*/.test(testedLine[end])) {
+                    return [{
+                        coords: start,
+                        lineN: lineN
+                    }, {
+                        coords: end,
+                        lineN: lineN
+                    }];
+                } else if (/\*/.test(testedLine[start])) {
+                    return {
+                        coords: start,
+                        lineN: lineN
+                    };
+                } else if (/\*/.test(testedLine[end])) {
+                    return {
+                        coords: end,
+                        lineN: lineN
+                    };
+                }
+
+                return null; // Add this line to handle cases where no asterisk is found
+            }
+
+            function groupByGearCoordinates(gears) {
+                // Create an object to store grouped values
+                let groupedValues = {};
+
+                // Iterate through the gears array
+                for (let i = 0; i < gears.length; i++) {
+                    let gear = gears[i];
+                    let gearDetails = gear.gear_details;
+
+                    // Iterate through the gear details array
+                    for (let j = 0; j < gearDetails.length; j++) {
+                        let gearCoord = `${gearDetails[j].lineN}-${gearDetails[j].coords}`;
+
+                        // Check if the gear coordinate is already a key in the groupedValues object
+                        if (groupedValues[gearCoord]) {
+                            // If yes, push the value to the existing array
+                            groupedValues[gearCoord].push(gear.value);
+                        } else {
+                            // If no, create a new array with the value as the first element
+                            groupedValues[gearCoord] = [gear.value];
+                        }
+                    }
+                }
+
+                // Filter out keys with exactly 2 items in the associated array
+                let filteredResult = Object.keys(groupedValues)
+                    .filter(key => groupedValues[key].length === 2)
+                    .reduce((obj, key) => {
+                        obj[key] = groupedValues[key];
+                        return obj;
+                    }, {});
+
+                // Convert the filtered object into an array of objects
+                let resultArray = Object.keys(filteredResult).map(key => ({
+                    [key]: filteredResult[key]
+                }));
+
+                return resultArray;
+            }
+
+            function displayResult(result) {
+                // Get the resultDisplay div element
+                let resultDisplay = document.getElementById('resultDisplay');
+
+                // Check if there's already a result element
+                let resultElement = resultDisplay.querySelector('p');
+
+                if (resultElement) {
+                    // If the element exists, update its text content
+                    resultElement.textContent = `SUM: ${result}`;
+                } else {
+                    // If the element doesn't exist, create a new <p> element
+                    resultElement = document.createElement('p');
+
+                    // Set the text content of the <p> element to the result
+                    resultElement.textContent = `SUM: ${result}`;
+
+                    // Append the <p> element to the resultDisplay div
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>
