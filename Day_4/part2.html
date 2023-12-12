@@ -1,0 +1,118 @@
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function extractScratchCards() {
+                var inputSrc = document.getElementById('input').value;
+                let sum = 0;
+
+                const lines = inputSrc.split('\n');
+                let tickets = {};
+
+                for (let line of lines) {
+                    const match = line.match(/^Card\s*(\d+):\s*(.+?)\s*\|\s*(.+)$/);
+
+                    if (match) {
+                        const cardNumber = parseInt(match[1]);
+                        const winningDigits = match[2].split(/\s+/).map(Number);
+                        const givenDigits = match[3].split(/\s+/).map(Number);
+                        const count = calculateCardPoints(winningDigits, givenDigits);
+
+                        //console.log(tickets[cardNumber] ? true : false);
+
+                        if (tickets[cardNumber]) {
+                            //If scratchcard was already added to tickets previously we just retrieve its instance number and update its winning and given digits
+                            let currentTicketInstancesN = tickets[cardNumber][0].instances;
+                            //console.log("Ticket: " + cardNumber + " Instance: " + tickets[cardNumber][0].instances)
+                            tickets[cardNumber][0].winningDigits = winningDigits;
+                            tickets[cardNumber][0].givenDigits = givenDigits;
+
+                            count > 0 ? updateNextTickets(cardNumber, count, tickets) : null;
+                        } else {
+                            tickets[cardNumber] = [{
+                                winningDigits: winningDigits, // Provide appropriate default values
+                                givenDigits: givenDigits, // Provide appropriate default values
+                                instances: 1
+                            }];
+
+                            count > 0 ? updateNextTickets(cardNumber, count, tickets) : null;
+                        }
+                    }
+                }
+
+                //console.log(tickets);
+                for (let i = 1; i <= Object.keys(tickets).length; i++) {
+                    //console.log(tickets[i][0].instances);
+                    sum += tickets[i][0].instances
+                }
+
+                displayResult(sum);
+            }
+
+            function updateNextTickets(cardNumber, count, tickets) {
+                let instanceCards2BIncreased = [];
+                const currentTicketInstancesN = tickets[cardNumber][0].instances ? tickets[cardNumber][0].instances : 1;
+                // Insert following tickets instances in tickets
+                for (let i = 1; i <= count; i++) {
+                    instanceCards2BIncreased.push(cardNumber + i)
+                    const nextCardNumber = cardNumber + i;
+                    const existingTicket = tickets[nextCardNumber];
+
+                    if (existingTicket !== undefined) {
+                        //console.log("Updating ticket " + nextCardNumber);
+                        //console.log(existingTicket[0]);
+                        //console.log("New number of instances:\n");
+                        //console.log(existingTicket[0].instances + currentTicketInstancesN);
+                        existingTicket[0].instances = existingTicket[0].instances + currentTicketInstancesN;
+                    } else {
+                        // Add a new entry
+                        tickets[nextCardNumber] = [{
+                            winningDigits: [], // Provide appropriate default values
+                            givenDigits: [], // Provide appropriate default values
+                            instances: 1 + currentTicketInstancesN
+                        }];
+                    }
+                }
+                //console.log("Tickets after udpateNextTickets:\n");
+                //console.log(tickets);
+                //console.log("Tickets to increase for " + cardNumber);
+                //console.log(instanceCards2BIncreased);
+                //return tickets;
+            }
+
+            function calculateCardPoints(winningDigits, givenDigits) {
+                let count = 0;
+
+                for (let givenDigit of givenDigits) {
+                    for (let winningDigit of winningDigits) {
+                        if (givenDigit === winningDigit) {
+                            count++;
+                        }
+                    }
+                }
+                return count;
+            }
+
+            function displayResult(result) {
+                let resultDisplay = document.getElementById('resultDisplay');
+                let resultElement = resultDisplay.querySelector('p');
+
+                if (resultElement) {
+                    resultElement.textContent = `SUM: ${result}`;
+                } else {
+                    resultElement = document.createElement('p');
+                    resultElement.textContent = `SUM: ${result}`;
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>
