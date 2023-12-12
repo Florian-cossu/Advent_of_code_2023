@@ -1,0 +1,135 @@
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function parseInput() {
+                var input = document.getElementById('input').value;
+                const lines = input.split('\n');
+                const data = {};
+
+                let currentKey = '';
+                let currentArray = [];
+                let locations = [];
+
+                for (let line of lines) {
+                    if (line.startsWith('seeds')) {
+                        let seeds = line.split(': ')[1].split(' ').map(Number);
+                        //let expandedSeeds = seedRangeExpansion(seeds);
+                        data.seeds = seeds;
+                    } else if (line.includes(':')) {
+                        if (currentKey && currentArray.length > 0) {
+                            data[currentKey.replace(/:/g, '')] = currentArray;
+                        }
+                        currentKey = line.replace(/:/g, '');
+                        currentArray = [];
+                    } else if (line.trim() !== '') {
+                        const numbers = line.split(' ').map(Number);
+                        currentArray.push(numbers);
+                    }
+                }
+
+                // Check for the last section
+                if (currentKey && currentArray.length > 0) {
+                    data[currentKey] = currentArray;
+                }
+
+                expandedSeedConversionFunnel(data, locations);
+                //mapToConversion('seed-to-soil map', 79, data);
+                //console.log(data);
+                console.log(locations);
+                displayResult(Math.min(...locations));
+            }
+
+            function expandedSeedConversionFunnel(data, locations) {
+                for (let seed of data.seeds) {
+                    let soil = mapToConversion('seed-to-soil map', seed, data);
+                    let fertilizer = mapToConversion('soil-to-fertilizer map', soil, data);
+                    let water = mapToConversion('fertilizer-to-water map', fertilizer, data);
+                    let light = mapToConversion('water-to-light map', water, data);
+                    let temperature = mapToConversion('light-to-temperature map', light, data);
+                    let humidity = mapToConversion('temperature-to-humidity map', temperature, data);
+                    let location = mapToConversion('humidity-to-location map', humidity, data);
+                    locations.push(location);
+                }
+            }
+
+            function mapToConversion(mapName, input, data) {
+                let map = data[mapName];
+                //console.log(map[0]);
+                //console.log(input);
+                let conversionCandidates = [];
+                let outPutRangeArray = [];
+                for (let i = 0; i < map.length; i++) {
+                    if (map[i][1] <= input && map[i][1] + map[i][2] - 1 >= input) {
+                        conversionCandidates.push(map[i]);
+                    }
+                }
+
+                if (conversionCandidates.length > 0) {
+                    for (let candidate of conversionCandidates) {
+                        let outputRange = 0;
+                        outputRange = candidate[0] + (candidate[2] - ((candidate[1] + candidate[2]) - input));
+                        outPutRangeArray.push(outputRange);
+                    }
+                    //console.log(conversionCandidates);
+                    //console.log(outPutRangeArray);
+                    //console.log("Minimum output conversion: " + Math.min(...outPutRangeArray));
+                    return Math.min(...outPutRangeArray);
+                } else {
+                    //console.log("No matching map. Output is equal to Input");
+                    return input;
+                }
+            }
+
+            function seedRangeExpansion(seeds) {
+                if (seeds.length % 2 !== 0) {
+                    // Ensure the array has an even number of elements
+                    console.error('Invalid input: The array must contain an even number of digits.');
+                    return [];
+                }
+
+                let result = [];
+
+                for (let i = 0; i < seeds.length; i += 2) {
+                    let start = Math.min(seeds[i], seeds[i + 1]);
+                    let end = Math.max(seeds[i], seeds[i + 1]);
+
+                    for (let j = start; j <= end; j++) {
+                        result.push(j);
+                    }
+                }
+
+                return result;
+            }
+
+            function displayResult(result) {
+                // Get the resultDisplay div element
+                let resultDisplay = document.getElementById('resultDisplay');
+
+                // Check if there's already a result element
+                let resultElement = resultDisplay.querySelector('p');
+
+                if (resultElement) {
+                    // If the element exists, update its text content
+                    resultElement.textContent = `SUM: ${result}`;
+                } else {
+                    // If the element doesn't exist, create a new <p> element
+                    resultElement = document.createElement('p');
+
+                    // Set the text content of the <p> element to the result
+                    resultElement.textContent = `SUM: ${result}`;
+
+                    // Append the <p> element to the resultDisplay div
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>

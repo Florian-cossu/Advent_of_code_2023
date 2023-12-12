@@ -1,0 +1,136 @@
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function strParse() {
+                var inputSrc = document.getElementById('input').value;
+                let data = {};
+                let sum = 0;
+
+                // Split the input into lines
+                inputSrc.split('\n').forEach(line => {
+                    // Use match method to find the index
+                    let match = line.split(':')[0].match(/\d+/);
+                    // Check if a match is found
+                    let index = parseInt(match && match[0] || line, 10);
+
+                    let game = line.split(':')[1];
+
+                    // Split the individual cube sets
+                    let cubeSets = game.split(';');
+
+                    // Initialize an object to store numbers associated with colors
+                    let colorsObj = {};
+
+                    // Function to update colorsObj with color and number
+                    const updateColorsObj = (color, num) => {
+                        // Check if the color is already in the object, if not, initialize an array
+                        if (!colorsObj[color]) {
+                            colorsObj[color] = [];
+                        }
+
+                        // Add each number to the array only if it's not already present
+                        for (let i = 0; i < num; i++) {
+                            if (!colorsObj[color].includes(num)) {
+                                colorsObj[color].push(num);
+                            }
+                        }
+                    };
+
+
+
+                    // Process each cube set
+                    cubeSets.forEach(cubeSet => {
+                        // Split the colors in each cube set
+                        let colors = cubeSet.split(',');
+
+                        // Process each color and associated number
+                        colors.forEach(colorNumPair => {
+                            let [num, color] = colorNumPair.trim().split(' ');
+                            num = parseInt(num, 10);
+
+                            // Update colorsObj with color and number
+                            updateColorsObj(color, num);
+                        });
+                    });
+
+                    // Store the colorsObj in the data object with the game index as the key
+                    data[index] = data[index] || {}; // Ensure data[index] is initialized
+                    Object.keys(colorsObj).forEach(color => {
+                        data[index][color] = (data[index][color] || []).concat(colorsObj[color]);
+                    });
+                });
+
+                // Assuming data is already populated using the strParse function
+                let result = getPowerSum(data);
+
+                // Log or use the result as needed
+                displayResult(result);
+                console.log("SUM:", result);
+
+            }
+
+            function getPowerSum(data) {
+                let sum = 0;
+
+                // Iterate over each game index in the data object
+                Object.keys(data).forEach(index => {
+                    // Initialize variables to store the highest values for each color
+                    let maxRed = 0;
+                    let maxGreen = 0;
+                    let maxBlue = 0;
+
+                    // Iterate over each color in the game index
+                    Object.keys(data[index]).forEach(color => {
+                        // Find the highest value for each color in the array
+                        let maxNum = Math.max(...data[index][color]);
+
+                        // Update the corresponding variable based on the color
+                        if (color === 'red') {
+                            maxRed = Math.max(maxRed, maxNum);
+                        } else if (color === 'green') {
+                            maxGreen = Math.max(maxGreen, maxNum);
+                        } else if (color === 'blue') {
+                            maxBlue = Math.max(maxBlue, maxNum);
+                        }
+                    });
+
+                    // Multiply the highest values for red, green, and blue, and add to the sum
+                    sum += maxRed * maxGreen * maxBlue;
+                });
+
+                return sum;
+            }
+
+            function displayResult(result) {
+                // Get the resultDisplay div element
+                let resultDisplay = document.getElementById('resultDisplay');
+
+                // Check if there's already a result element
+                let resultElement = resultDisplay.querySelector('p');
+
+                if (resultElement) {
+                    // If the element exists, update its text content
+                    resultElement.textContent = `SUM: ${result}`;
+                } else {
+                    // If the element doesn't exist, create a new <p> element
+                    resultElement = document.createElement('p');
+
+                    // Set the text content of the <p> element to the result
+                    resultElement.textContent = `SUM: ${result}`;
+
+                    // Append the <p> element to the resultDisplay div
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>
