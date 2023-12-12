@@ -1,0 +1,49 @@
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function strParse() {
+                let sum = 0;
+                var inputSrc = document.getElementById('input').value;
+                console.log(inputSrc);
+
+                // Split the input into lines
+                var strArr = inputSrc.split('\n').map(line => {
+                    // Extract all digits from the line using a regular expression
+                    var digits = line.match(/\d/g);
+
+                    // If digits were found, extract the first and last digits
+                    // If there's only one digit, use it for both first and last
+                    // Otherwise, return an empty string
+                    if (digits && digits.length >= 1) {
+                        sum += (parseInt(digits.length === 1 ? digits[0] + digits[0] : digits[0] + digits[digits.length - 1], 10));
+                        return digits.length === 1 ? digits[0] + digits[0] : digits[0] + digits[digits.length - 1];
+                    }
+                });
+
+                resultDisplay(sum);
+                console.log("result " + strArr + "\nSum = " + sum);
+            }
+
+            function resultDisplay(input, id = '#resultDisplay') {
+                var resultDiv = document.querySelector(id);
+                // Clear existing content
+                resultDiv.innerHTML = '';
+
+                // Create a p element for each line in the array
+                var result = document.createElement('p');
+                result.textContent = input;
+
+                // Append the p element to the resultDiv
+                resultDiv.appendChild(result);
+            }
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>
