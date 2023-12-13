@@ -23,4 +23,4 @@ None of your business in fact but my job is related to IT and computers but I'm 
 
 ## Current progress
 Currently stuck on day 5 part 2
-![](https://geps.dev/progress/22)
+![26](https://progress-bar.dev/26?title=progress)
