@@ -19,7 +19,7 @@ Since I am a Javascript noob I decided to try and do this challenge in JS to get
 - To improve my coding skills and help me for my personal upcoming or ongooing projects
 
 ## Who are you?
-None of your business in fact but my job is related to IT and computers but I'm not a developper. I'm a linguist.
+I'm not a developper. I'm a linguist.
 
 ## Current progress
 #### Days finished:
