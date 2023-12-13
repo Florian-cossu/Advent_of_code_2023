@@ -22,10 +22,9 @@ Since I am a Javascript noob I decided to try and do this challenge in JS to get
 None of your business in fact but my job is related to IT and computers but I'm not a developper. I'm a linguist.
 
 ## Current progress
-Days finished:
+#### Days finished:
 [1, 2, 3, 4, 6]
----
-Days in progress:
+#### Days in progress:
 [5 part II, 7]
 
 ![26](https://progress-bar.dev/26?title=progress)
