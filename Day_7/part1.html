@@ -1,0 +1,126 @@
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function parseInput() {
+                var input = document.getElementById('input').value;
+                const lines = input.split('\n');
+                let data = [];
+                let total = 0;
+
+                for (let line of lines) {
+                    let hand = line.split(/[\s\t]+/)[0];
+                    let bid = parseInt(line.split(/[\s\t]+/)[1], 10);
+                    data.push({ hand, bid });
+                }
+
+                // Order data by hand type and then by each character in HAND
+                data.sort((a, b) => {
+                    const typeComparison = compareHandTypes(a.hand, b.hand);
+
+                    if (typeComparison !== 0) {
+                        return typeComparison;
+                    }
+
+                    // If hand types are equal, compare by each character in HAND
+                    const handA = a.hand;
+                    const handB = b.hand;
+
+                    for (let i = 0; i < Math.min(handA.length, handB.length); i++) {
+                        const charA = handA.charAt(i);
+                        const charB = handB.charAt(i);
+
+                        const orderComparison = cardOrder(charA) - cardOrder(charB);
+
+                        if (orderComparison !== 0) {
+                            return orderComparison;
+                        }
+                    }
+
+                    // If all characters are equal, compare based on bid
+                    return a.bid - b.bid;
+                });
+
+                let rank = 0;
+
+                for (let i = data.length - 1; i >= 0; i--) {
+                    rank++;
+                    total += data[i].bid * rank;
+                }
+
+                console.log(data[0].bid);
+
+                console.log(data);
+                displayResult(total);
+            }
+
+            function compareHandTypes(handA, handB) {
+                const typeA = getHandType(handA);
+                const typeB = getHandType(handB);
+
+                return typeA - typeB;
+            }
+
+            function getHandType(hand) {
+                const cardFrequencies = getCardFrequencies(hand);
+
+                const values = Object.values(cardFrequencies).sort((a, b) => b - a);
+
+                if (values[0] === 5) return 0; // Five of a kind
+                if (values[0] === 4 && values[1] === 1) return 1; // Four of a kind
+                if (values[0] === 3 && values[1] === 2) return 2; // Full house
+                if (values[0] === 3 && values[1] === 1) return 3; // Three of a kind
+                if (values[0] === 2 && values[1] === 2) return 4; // Two pair
+                if (values[0] === 2 && values[1] === 1) return 5; // One pair
+                return 6; // High card
+            }
+
+            function getCardFrequencies(hand) {
+                const frequencies = {};
+
+                for (let char of hand) {
+                    frequencies[char] = (frequencies[char] || 0) + 1;
+                }
+
+                return frequencies;
+            }
+
+            function cardOrder(card) {
+                // Define the order of cards from highest to lowest
+                const cardOrder = "AKQJT98765432";
+
+                // Get the index of the card in the cardOrder string
+                return cardOrder.indexOf(card);
+            }
+
+            function displayResult(result) {
+                // Get the resultDisplay div element
+                let resultDisplay = document.getElementById('resultDisplay');
+
+                // Check if there's already a result element
+                let resultElement = resultDisplay.querySelector('p');
+
+                if (resultElement) {
+                    // If the element exists, update its text content
+                    resultElement.textContent = `SUM: ${result}`;
+                } else {
+                    // If the element doesn't exist, create a new <p> element
+                    resultElement = document.createElement('p');
+
+                    // Set the text content of the <p> element to the result
+                    resultElement.textContent = `SUM: ${result}`;
+
+                    // Append the <p> element to the resultDisplay div
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>
