@@ -1,0 +1,204 @@
+//WIP LEFT IT ASIDE BECAUSE I SPENT TOO MUCH TILE ON IT ALREADY
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function parseInput() {
+                var input = document.getElementById('input').value;
+                const lines = input.split('\n');
+                const data = {};
+
+                let currentKey = '';
+                let currentArray = [];
+                let locations = [];
+                let newSeedRanges = [];
+
+                for (let line of lines) {
+                    if (line.startsWith('seeds')) {
+                        let seeds = line.split(': ')[1].split(' ').map(Number);
+                        let seedsRanges = seedToRanges(seeds);
+                        data.seeds = seedsRanges;
+                    } else if (line.includes(':')) {
+                        if (currentKey && currentArray.length > 0) {
+                            data[currentKey.replace(/:/g, '')] = currentArray;
+                        }
+                        currentKey = line.replace(/:/g, '');
+                        currentArray = [];
+                    } else if (line.trim() !== '') {
+                        const numbers = line.split(' ').map(Number);
+                        currentArray.push(numbers);
+                    }
+                }
+
+                // Sort arrays in data by their second element
+                for (let key in data) {
+                    if (key !== 'seeds') {
+                        data[key] = rangesSorting(data[key]);
+                    }
+                }
+
+                // Check for the last section
+                if (currentKey && currentArray.length > 0) {
+                    data[currentKey] = currentArray;
+                }
+
+                for (let seedRange of data.seeds) {
+                    let seedRangeCopy = seedRange;
+                    let soil = mapToConversion("seed-to-soil map", seedRangeCopy, data);
+                    console.log(soil);
+                }
+
+                //console.log(data.seeds);
+
+                // Calculate the minimum value across all chunks
+                //const minLocation = Math.min(...locations);
+
+                // Display the result
+                //displayResult(minLocation);
+            }
+
+            function seedToRanges(seeds) {
+                let seedRanges = [];
+                if (seeds % 2 !== 0) {
+                    for (let i = 0; i < seeds.length; i++) {
+                        seedRanges.push([seeds[i], seeds[i + 1]]);
+                        i++;
+                    }
+                } else {
+                    console.log("Error: Uneven number of seeds data");
+                }
+                seedRanges.sort((a, b) => a[0] - b[0]);
+                return seedRanges;
+            }
+
+            function rangesSorting(array) {
+                array.sort((a, b) => a[1] - b[1]);
+                return array;
+            }
+
+            function mapToConversion(mapName, input, data) {
+                console.log(input);
+                let inputs = [input];
+
+                let map = data[mapName];
+                //console.log(map)
+                let conversionCandidates = [];
+                let toSplit = false;
+                for (let inputCopy of inputs) {
+                    let input = inputCopy;
+
+                    for (let i = 0; i < map.length; i++) {
+                        if (((input[0] + input[1]) - 1) < map[i][1]) {
+                            //Need to check if it was already pushed during a previous loop. If not we push if it was, we do nothing
+                            conversionCandidates.push([input[0], input[1]]);
+                            console.log("Seed range is strictly under map bounds");
+                            toSplit = false;
+                            break;
+                        } else if (input[0] > ((map[i][1] + map[i][2]) - 1)) {
+                            //Need to check if it was already pushed during a previous loop. If not we push if it was, we do nothing
+                            conversionCandidates.push([input[0], input[1]]);
+                            console.log("Seed range is strictly above map bounds");
+                            toSplit = false;
+                            break;
+                        } else if (input[0] >= map[i][1] && ((input[0] + input[1]) - 1) <= ((map[i][1] + map[i][2]) - 1)) {
+                            conversionCandidates.push([input[0] + ((map[i][1] + map[i][2]) - 1) - input[0], input[1]]);
+                            console.log("Seed range fits in map's range")
+                            console.log(input);
+                            console.log("Was converted to:");
+                            console.log(conversionCandidates);
+                            toSplit = false;
+                            break;
+                        } else if (input[0] < map[i][1] && ((input[0] + input[1]) - 1) > ((map[i][1] + map[i][2]) - 1)) {
+                            let newRangesArray = [];
+                            //Push ranges lower than current Map's boudaries
+                            newRangesArray.push([input[0], ((map[i][1] - input[0]) + 1)]);
+                            //Push range perfectly fitting in current map's range
+                            newRangesArray.push(map[i][1], map[i][2]);
+                            //Push range higher than current map's boundaries
+                            newRangesArray.push([input[1] - (input[0] + map[i][1]), input[1] - (((map[i][1] - input[0]) + 1) + map[i][2])]);
+                            //Removing current input because it will be decomposed in multiple ranges before being repassed through conditions blocks
+                            const index = inputs.indexOf(input);
+
+                            const x = inputs.splice(index, 1);
+                            for (let range of newRangesArray) {
+                                inputs.push(range);
+                            }
+                            console.log("Seed range is bigger than map range on both sides");
+                            toSplit = true;
+                            break;
+                        } else if (input[0] < map[i][1] && ((input[0] + input[1]) - 1) < ((map[i][1] + map[i][2]) - 1)) {
+                            let newRangesArray = [];
+                            //Push ranges lower than current Map's boudaries
+                            newRangesArray.push([input[0], ((map[i][1] - input[0]) + 1)]);
+                            //Push range perfectly fitting in current map's range
+                            newRangesArray.push(map[i][1], map[i][2]);
+                            //Removing current input because it will be decomposed in multiple ranges before being repassed through conditions blocks
+                            const index = inputs.indexOf(input);
+
+                            const x = inputs.splice(index, 1);
+                            for (let range of newRangesArray) {
+                                inputs.push(range);
+                            }
+                            console.log("Seed range overlaps with beginning of map range");
+                            toSplit = true;
+                            break;
+                        } else if (input[0] > map[i][1] && ((input[0] + input[1]) - 1) > ((map[i][1] + map[i][2]) - 1)) {
+                            let newRangesArray = [];
+                            //Push range perfectly fitting in current map's range
+                            newRangesArray.push(map[i][1], map[i][2]);
+                            //Push range higher than current map's boundaries
+                            newRangesArray.push([input[1] - (input[0] + map[i][1]), input[1] - (((map[i][1] - input[0]) + 1) + map[i][2])]);
+                            //Removing current input because it will be decomposed in multiple ranges before being repassed through conditions blocks
+                            const index = inputs.indexOf(input);
+
+                            const x = inputs.splice(index, 1);
+                            for (let range of newRangesArray) {
+                                inputs.push(range);
+                            }
+                            console.log("Seed range overlaps with end of map range");
+                            toSplit = true;
+                            break;
+                        }
+                    }
+                }
+                console.log(conversionCandidates);
+                return conversionCandidates;
+            }
+
+            // Custom function to check if two arrays are equal
+            function arraysEqual(arr1, arr2) {
+                return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
+            }
+
+            function displayResult(result) {
+                // Get the resultDisplay div element
+                let resultDisplay = document.getElementById('resultDisplay');
+
+                // Check if there's already a result element
+                let resultElement = resultDisplay.querySelector('p');
+
+                if (resultElement) {
+                    // If the element exists, update its text content
+                    resultElement.textContent = `SUM: ${result}`;
+                } else {
+                    // If the element doesn't exist, create a new <p> element
+                    resultElement = document.createElement('p');
+
+                    // Set the text content of the <p> element to the result
+                    resultElement.textContent = `SUM: ${result}`;
+
+                    // Append the <p> element to the resultDisplay div
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>
