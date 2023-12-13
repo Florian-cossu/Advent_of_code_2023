@@ -1,0 +1,95 @@
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function parseInput() {
+                var input = document.getElementById('input').value;
+                const lines = input.split('\n');
+                let data = [];
+                let outComes = [];
+                let total = 0;
+
+                for (let line of lines) {
+                    let label = line.split(':')[0];
+                    let record = line.split(/\:[\s\t]*/)[1].split(/\s+/).map(Number);
+                    const recordLine = {
+                        [label]: record
+                    };
+                    data.push(recordLine);
+                }
+
+                console.log(data);
+
+                if (data[0].Time.length == 1) {
+                    total = calculateOutcomes(data[0].Time[0], data[1].Distance[0]);
+                } else {
+                    for (let i = 0; i < data[0].Time.length; i++) {
+                        outComes.push(calculateOutcomes(data[0].Time[i], data[1].Distance[i]));
+                        //console.log(data[0].Time[i]);
+                        //console.log(data[1].Distance[i]);
+                    }
+
+                    total = multiplySequentially(outComes);
+                }
+
+                for (let i = 0; i < data[0].Time.length; i++) {
+                    outComes.push(calculateOutcomes(data[0].Time[i], data[1].Distance[i]));
+                    //console.log(data[0].Time[i]);
+                    //console.log(data[1].Distance[i]);
+                }
+
+                total = multiplySequentially(outComes);
+
+                displayResult(total);
+            }
+
+            function calculateOutcomes(time, distance) {
+                //console.log("Time:\t" + time + "\tDistance:\t" + distance);
+                let possibilities = 0;
+                for (let i = 1; i < time; i++) {
+                    let distanceCrossed = i * (time - i);
+                    if (distanceCrossed > distance) {
+                        possibilities++;
+                    }
+                }
+                return possibilities;
+            }
+
+            function multiplySequentially(arr) {
+                // Use the reduce function to multiply each element sequentially
+                const result = arr.reduce((product, currentNumber) => product * currentNumber, 1);
+                return result;
+            }
+
+            function displayResult(result) {
+                // Get the resultDisplay div element
+                let resultDisplay = document.getElementById('resultDisplay');
+
+                // Check if there's already a result element
+                let resultElement = resultDisplay.querySelector('p');
+
+                if (resultElement) {
+                    // If the element exists, update its text content
+                    resultElement.textContent = `SUM: ${result}`;
+                } else {
+                    // If the element doesn't exist, create a new <p> element
+                    resultElement = document.createElement('p');
+
+                    // Set the text content of the <p> element to the result
+                    resultElement.textContent = `SUM: ${result}`;
+
+                    // Append the <p> element to the resultDisplay div
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>
