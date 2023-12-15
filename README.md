@@ -5,8 +5,8 @@ I am not a programmer. Programming is a hobby for me and I only have experience 
 
 <img src="AoC_logo.png"
      alt="AoC_logo logo"
-     style="float: left; margin-right: 10px; size:1rem;" />
-
+     style="float: left; margin-right: .5rem; height: 3rem;" />
+     
 You don't know what Advent of Code is? Check out their [About page](https://adventofcode.com/2023/about)!
 
 ## Languages used
