@@ -23,8 +23,8 @@ I'm not a developper. I'm a linguist.
 
 ## Current progress
 #### Days finished:
-[1, 2, 3, 4, 6]
+[1, 2, 3, 4, 6, 7]
 #### Days in progress:
-[5 part II, 7]
+[5 part II, 8]
 
-![26](https://progress-bar.dev/26?title=progress)
+![25](https://progress-bar.dev/25?title=progress)
