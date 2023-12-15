@@ -1,0 +1,206 @@
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function parseInput() {
+                var input = document.getElementById('input').value;
+                const lines = input.split('\n');
+                let data = [];
+                let total = 0;
+                let expectedResult = 246436046;
+
+                for (let line of lines) {
+                    let hand = line.split(/[\s\t]+/)[0];
+                    let handType = getHandType(hand);
+                    let bid = parseInt(line.split(/[\s\t]+/)[1], 10);
+                    if (hand.match(/J/)) {
+                        handType = generateBestHand(hand);
+                        data.push({
+                            handType,
+                            hand,
+                            bid
+                        });
+                    } else {
+                        handType = getHandType(hand);
+                        data.push({
+                            handType,
+                            hand,
+                            bid
+                        });
+                    }
+                }
+
+                // Order data by hand type found in data.handType and then by each character in HAND
+                data.sort((a, b) => {
+                    const typeComparison = a.handType - b.handType;
+
+                    if (typeComparison !== 0) {
+                        return typeComparison;
+                    }
+
+                    // If hand types are equal, compare by each character in HAND
+                    const handA = a.hand;
+                    const handB = b.hand;
+
+                    for (let i = 0; i < Math.min(handA.length, handB.length); i++) {
+                        const charA = handA.charAt(i);
+                        const charB = handB.charAt(i);
+
+                        const orderComparison = cardOrder(charA) - cardOrder(charB);
+
+                        if (orderComparison !== 0) {
+                            return orderComparison;
+                        }
+                    }
+                });
+
+                //end of sorting
+
+                let rank = 0;
+
+                for (let i = data.length - 1; i >= 0; i--) {
+                    rank++;
+                    total += data[i].bid * rank;
+                }
+
+                console.log(data);
+                displayResult(total, expectedResult);
+            }
+
+            function compareHandTypes(handA, handB) {
+                const typeA = getHandType(handA);
+                const typeB = getHandType(handB);
+
+                return typeA - typeB;
+            }
+
+            function getHandType(hand) {
+                const cardFrequencies = getCardFrequencies(hand);
+
+                const values = Object.values(cardFrequencies).sort((a, b) => b - a);
+
+                if (values[0] === 5) return 0; // Five of a kind
+                if (values[0] === 4 && values[1] === 1) return 1; // Four of a kind
+                if (values[0] === 3 && values[1] === 2) return 2; // Full house
+                if (values[0] === 3 && values[1] === 1) return 3; // Three of a kind
+                if (values[0] === 2 && values[1] === 2) return 4; // Two pair
+                if (values[0] === 2 && values[1] === 1) return 5; // One pair
+                return 6; // High card
+            }
+
+            function getCardFrequencies(hand) {
+                const frequencies = {};
+
+                for (let char of hand) {
+                    frequencies[char] = (frequencies[char] || 0) + 1;
+                }
+
+                return frequencies;
+            }
+
+            function cardOrder(card) {
+                // Define the order of cards from highest to lowest
+                //const cardOrder = "AKQJT98765432";
+                const cardOrder = "AKQT98765432J";
+
+                // Get the index of the card in the cardOrder string
+                return cardOrder.indexOf(card);
+            }
+
+            function generateBestHand(hand) {
+                let handType = 0;
+                //console.log("Original hand: " + hand);
+                hand = sortHand(hand);
+                switch (getHandType(hand)) {
+                    case 0:
+                        hand = "AAAAA";
+                        //Since all card are J's they'll all be replaced by A's to go for highest score
+                        handType = 0;
+                        break;
+                    case 1:
+                        hand = hand.replace(/J/g, hand[0]);
+                        //Since we have four of a kind we either have one J replaced with the repeated character, or a single non J character that we'll replace J with to get 5 of a kind to get higher score. In either case the strongest label will be the first in hand
+                        handType = 0;
+                        break;
+                    case 2:
+                        hand = hand.replace(/J/g, hand.match(/(.)\1{2}/)[0][0]);
+                        //Since we have a 3 of a kind plus a pair, again we replace J with the non J character to achieve 5 of a kind
+                        handType = 0;
+                        //console.log("Sorted hand and replaced: " + hand);
+                        break;
+                    case 3:
+                        hand = hand.replace(/J/g, hand.match(/(.)\1{2}/)[0][0]);
+                        //In this case we have 3 of a kind + 2 different labels. In this case it's always better to replace J by the character repeated thrice so that we end up with a 4 of a kind
+                        handType = 1;
+                        //console.log("Sorted hand and replaced: " + hand);
+                        break;
+                    case 4:
+                        //In the case of two pairs there are two possibilities: either we have a pair of J's and we just replace it with the other paired label to get four of a kind or we only have a single J and we replace it by the highest label pair which will always be found at start of hand
+                        if (hand.match(/JJ/)) {
+                            hand = hand.replace(/J/g, hand.match(/(.)\1/)[0][0]);
+                            handType = 1;
+                            //console.log("Sorted hand and replaced: " + hand);
+                        } else {
+                            hand = hand.replace(/J/g, hand[0]);
+                            handType = 2;
+                            //console.log("Sorted hand and replaced: " + hand);
+                        }
+                        break;
+                    case 5:
+                        //In this case we have a single pair and then unique labels. So we'll always end up with a 3 of a kind
+                        hand = hand.replace(/J/g, hand.match(/(.)\1/)[0][0]);
+                        handType = 3;
+                        //console.log("Sorted hand and replaced: " + hand);
+                        break;
+                    case 6:
+                        hand = hand.replace(/J/g, hand[0]);
+                        //In this case we have all different labels. Best we do is a pair with the highest label.
+                        handType = 5;
+                        //console.log("Sorted hand and replaced: " + hand);
+                        break;
+                }
+
+                return handType;
+            }
+
+            function sortHand(hand) {
+                const order = "AKQT98765432J";
+
+                // Sort the characters based on their index in the order string
+                const sortedHand = hand.split('').sort((a, b) => order.indexOf(a) - order.indexOf(b)).join('');
+
+                return sortedHand;
+            }
+
+            function displayResult(result, expectedResult) {
+                // Get the resultDisplay div element
+                let resultDisplay = document.getElementById('resultDisplay');
+
+                // Check if there's already a result element
+                let resultElement = resultDisplay.querySelector('pre');
+
+                if (resultElement) {
+                    // If the element exists, update its text content
+                    resultElement.textContent = `Result: ${result}\nExpected result: ${expectedResult}\nDifference: ${expectedResult - result}`;
+                } else {
+                    // If the element doesn't exist, create a new <p> element
+                    resultElement = document.createElement('pre');
+
+                    // Set the text content of the <p> element to the result
+                    resultElement.textContent = `Result: ${result}\nExpected result: ${expectedResult}\nDifference: ${expectedResult - result}`;
+
+                    // Append the <p> element to the resultDisplay div
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>
