@@ -22,9 +22,32 @@ Since I am a Javascript noob I decided to try and do this challenge in JS to get
 I'm not a developper. I'm a linguist.
 
 ## Current progress
-#### Days finished:
-[1, 2, 3, 4, 6, 7]
-#### Days in progress:
-[5 part II, 8]
+|Day    |Status | Comments          |
+|----	|---	|------------------	|
+| 1  	| ✅    |                  	|
+| 2  	| ✅ 	|                  	|
+| 3  	| ✅ 	|                  	|
+| 4  	| ✅ 	|                  	|
+| 5  	| ⏸️ 	| Stuck on part II 	|
+| 6  	| ✅ 	|                  	|
+| 7  	| ✅    |                   |
+| 8  	| ▶️ 	 |                   |
+| 9  	|   	|                  	|
+| 10 	|   	|                  	|
+| 11 	|   	|                  	|
+| 12 	|   	|                  	|
+| 13 	|   	|                  	|
+| 14 	|   	|                  	|
+| 15 	|   	|                  	|
+| 16 	|   	|                  	|
+| 17 	|   	|                  	|
+| 18 	|   	|                  	|
+| 19 	|   	|                  	|
+| 20 	|   	|                  	|
+| 21 	|   	|                  	|
+| 22 	|   	|                  	|
+| 23 	|   	|                  	|
+| 24 	|   	|                  	|
+| 25 	|   	|                  	|
 
 ![25](https://progress-bar.dev/25?title=progress)
