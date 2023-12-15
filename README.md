@@ -21,7 +21,7 @@ Since I am a Javascript noob I decided to try and do this challenge in JS to get
 ## Who are you?
 I'm not a developper. I'm a linguist.
 
-## Current progress
+## Current progress ![25](https://progress-bar.dev/25)
 |Day    |Status | Comments          |
 |----	|---	|------------------	|
 | 1  	| ✅    |                  	|
@@ -49,5 +49,3 @@ I'm not a developper. I'm a linguist.
 | 23 	|   	|                  	|
 | 24 	|   	|                  	|
 | 25 	|   	|                  	|
-
-![25](https://progress-bar.dev/25?title=progress)
