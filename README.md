@@ -1,4 +1,4 @@
-# <img src="/AoC_logo.png" height="12rem"> Advent_of_Code_2023
+# <img src="/AoC_logo.png" height="24rem"> Advent_of_Code_2023
 
 ## Warning
 I am not a programmer. Programming is a hobby for me and I only have experience with basic PHP, HTML, MySQL and Javascript. Please do not judge my noodle messed up code too harshly. I tried to use ChatGPT as sparingly as possible, but since I'm a noob in Vanilla JS I had to ask for a few suggestions hence why the code might seem hectic and far from polished.
