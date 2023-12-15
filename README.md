@@ -1,12 +1,8 @@
-# ![Drag Racing](AoC_logo.png)Advent_of_Code_2023
+# <img src="/uploads/d19fcc3d3b4d313c8cd7960a343463b6/table.png" height="3rem"> Advent_of_Code_2023
 
 ## Warning
 I am not a programmer. Programming is a hobby for me and I only have experience with basic PHP, HTML, MySQL and Javascript. Please do not judge my noodle messed up code too harshly. I tried to use ChatGPT as sparingly as possible, but since I'm a noob in Vanilla JS I had to ask for a few suggestions hence why the code might seem hectic and far from polished.
 
-<img src="AoC_logo.png"
-     alt="AoC_logo logo"
-     style="float: left; margin-right: .5rem; height: 3rem;" />
-     
 You don't know what Advent of Code is? Check out their [About page](https://adventofcode.com/2023/about)!
 
 ## Languages used
