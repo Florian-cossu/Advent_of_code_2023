@@ -7,7 +7,75 @@
         <textarea id="input"></textarea>
         <button type="button" onclick='strParse()'>Test</button>
         <script>
-            //SCRIPT HERE//
+            function parseInput() {
+                var input = document.getElementById('input').value;
+                const lines = input.split('\n');
+                let data = [];
+                let steps = 0;
+                let expectedResult = 23147;
+                let instructions = [];
+                let network = {};
+
+                for (let i = 0; i < lines.length; i++) {
+                    if (i == 0) {
+                        instructions = lines[i].split('');
+
+                        // Replace "L" with 0 and "R" with 1
+                        instructions = instructions.map(char => {
+                            if (char === 'L') {
+                                return 0;
+                            } else if (char === 'R') {
+                                return 1;
+                            }
+                        });
+                    } else if (!lines[i].match(/\w/)) {
+
+                    } else {
+                        let node = lines[i].split(' = ')[0];
+                        let leftNode = lines[i].split(' = ')[1].split(', ')[0].split(/\W/)[1];
+                        let rightNode = lines[i].split(' = ')[1].split(', ')[1].split(/\W/)[0];
+
+                        network[node] = [leftNode, rightNode];
+                    }
+                }
+                //console.log(network);
+
+                const startNode = "AAA";
+                const endNode = "ZZZ";
+                let currentNode = startNode;
+
+                do {
+                    for (let instruction of instructions) {
+                        currentNode = network[currentNode][instruction];
+                        steps++;
+                    }
+                } while (currentNode != endNode)
+
+                displayResult(steps, expectedResult);
+            }
+
+            function displayResult(result, expectedResult) {
+                // Get the resultDisplay div element
+                let resultDisplay = document.getElementById('resultDisplay');
+
+                // Check if there's already a result element
+                let resultElement = resultDisplay.querySelector('pre');
+
+                if (resultElement) {
+                    // If the element exists, update its text content
+                    resultElement.textContent = `Result: ${result}\nExpected result: ${expectedResult}\nDifference: ${expectedResult - result}`;
+                } else {
+                    // If the element doesn't exist, create a new <p> element
+                    resultElement = document.createElement('pre');
+
+                    // Set the text content of the <p> element to the result
+                    resultElement.textContent = `Result: ${result}\nExpected result: ${expectedResult}\nDifference: ${expectedResult - result}`;
+
+                    // Append the <p> element to the resultDisplay div
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+
         </script>
         <div id="resultDisplay">
             <!-- Result display -->

@@ -13,6 +13,7 @@ Since I am a Javascript noob I decided to try and do this challenge in JS to get
 - [Stack Overflow](https://stackoverflow.com/) (For quick language specific questions)
 - [Chat GPT](https://chat.openai.com/) (To ask more specific question or ask about code readability and logic)
 - [JSFiddle](https://jsfiddle.net/) (to live test my code)
+- [AoC Fornwall](https://aoc.fornwall.net/) (to get the expected result with someone else's working code to check whether I did wrong or not)
 
 ## Why do this ?
 - Because it seems to be a fun challenge (not fun anymore after day 5 actually)
@@ -22,30 +23,30 @@ Since I am a Javascript noob I decided to try and do this challenge in JS to get
 I'm not a developper. I'm a linguist.
 
 ## Current progress ![25](https://progress-bar.dev/25)
-|Day    |Status | Comments          |
-|----	|---	|------------------	|
-| 1  	| ✅    |                  	|
-| 2  	| ✅ 	|                  	|
-| 3  	| ✅ 	|                  	|
-| 4  	| ✅ 	|                  	|
-| 5  	| ⏸️ 	| Stuck on part II 	|
-| 6  	| ✅ 	|                  	|
-| 7  	| ✅    |                   |
-| 8  	| ▶️ 	 |                   |
-| 9  	|   	|                  	|
-| 10 	|   	|                  	|
-| 11 	|   	|                  	|
-| 12 	|   	|                  	|
-| 13 	|   	|                  	|
-| 14 	|   	|                  	|
-| 15 	|   	|                  	|
-| 16 	|   	|                  	|
-| 17 	|   	|                  	|
-| 18 	|   	|                  	|
-| 19 	|   	|                  	|
-| 20 	|   	|                  	|
-| 21 	|   	|                  	|
-| 22 	|   	|                  	|
-| 23 	|   	|                  	|
-| 24 	|   	|                  	|
-| 25 	|   	|                  	|
+|Day	|Status		| Comments																	|
+|----	|---		|------																		|
+| 1		| ✅			|																			|
+| 2		| ✅			|																			|
+| 3		| ✅			|																			|
+| 4		| ✅			|																			|
+| 5		| ⏸️		| Stuck on part II															|
+| 6		| ✅			|																			|
+| 7		| ✅			|																			|
+| 8		| ✅			| Nice progress. Only relied on GPT to help me out with LCM calculations	|
+| 9		| ▶️		|																			|
+| 10	|			|																			|
+| 11	|			|																			|
+| 12	|			|																			|
+| 13	|			|																			|
+| 14	|			|																			|
+| 15	|			|																			|
+| 16	|			|																			|
+| 17	|			|																			|
+| 18	|			|																			|
+| 19	|			|																			|
+| 20	|			|																			|
+| 21	|			|																			|
+| 22	|			|																			|
+| 23	|			|																			|
+| 24	|			|																			|
+| 25	|			|																			|

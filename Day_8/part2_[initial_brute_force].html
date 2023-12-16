@@ -6,6 +6,9 @@
     <body>
         <textarea id="input"></textarea>
         <button type="button" onclick='strParse()'>Test</button>
+        <!-- This is the initial version I came up with before hearing about LCM since the input data was generated to be compatible with
+        the LCM solution type. Please note that this is a "brute force" version that could be resource and time consuming. I didn't manage to
+        make it work without freezing my browser's tab -->
         <script>
             function parseInput() {
                 var input = document.getElementById('input').value;
@@ -17,7 +20,6 @@
                 let network = {};
                 let startNodes = [];
                 let endNodes = [];
-                let lcmRequiredData = [];
 
                 for (let i = 0; i < lines.length; i++) {
                     if (i == 0) {
@@ -48,50 +50,23 @@
                 }
                 //console.log(network);
 
-                for (let node of startNodes) {
-                    lcmRequiredData.push(walk(node, network, instructions))
-                }
+                let currentNodes = startNodes;
+                console.log(startNodes);
 
-                //console.log(lcmRequiredData);
-                steps = lcmArray(lcmRequiredData);
+                while (!currentNodes.every(node => node.endsWith('Z'))) {
+                    for (let instruction of instructions) {
+                        for (let i = 0; i < currentNodes.length; i++) {
+                            currentNodes[i] = network[currentNodes[i]][instruction];
+                        }
+                        steps++;
+                    }
+                }
 
                 displayResult(steps, expectedResult);
             }
 
-            // Function to calculate the Greatest Common Divisor (GCD)
-            function gcd(a, b) {
-                return b === 0 ? a : gcd(b, a % b);
-            }
-
-            // Function to calculate the Least Common Multiple (LCM) of an array of numbers
-            function lcmArray(numbers) {
-                if (numbers.length < 2) {
-                    throw new Error('At least two numbers are required to calculate the LCM.');
-                }
-
-                let result = numbers[0];
-
-                for (let i = 1; i < numbers.length; i++) {
-                    const currentNumber = numbers[i];
-                    const currentGCD = gcd(result, currentNumber);
-
-                    result = (result * currentNumber) / currentGCD;
-                }
-
-                return result;
-            }
-
-            function walk(node, network, instructions) {
-                let currentNode = node;
-                let steps = 0;
-
-                do {
-                    for (let instruction of instructions) {
-                        currentNode = network[currentNode][instruction];
-                        steps++;
-                    }
-                } while (!currentNode.match(/Z$/))
-                return steps;
+            function arraysEqual(arr1) {
+                return JSON.stringify(arr1) === JSON.stringify(arr2);
             }
 
             function displayResult(result, expectedResult) {
