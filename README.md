@@ -25,16 +25,16 @@ I'm not a developper. I'm a linguist.
 ## Current progress ![25](https://progress-bar.dev/25)
 |Day	|Status		| Comments																	|
 |----	|---		|------																		|
-| 1		| ✅			|																			|
-| 2		| ✅			|																			|
-| 3		| ✅			|																			|
-| 4		| ✅			|																			|
-| 5		| ⏸️		| Stuck on part II															|
-| 6		| ✅			|																			|
-| 7		| ✅			|																			|
-| 8		| ✅			| Nice progress. Only relied on GPT to help me out with LCM calculations	|
-| 9		| ▶️		|																			|
-| 10	|			|																			|
+| 1		|✅			|																			|
+| 2		|✅			|																			|
+| 3		|✅			|																			|
+| 4		|✅			|																			|
+| 5		|⏸️		 	| Stuck on part II															|
+| 6		|✅			|																			|
+| 7		|✅			|																			|
+| 8		|✅			| Nice progress. Only relied on GPT to help me out with LCM calculations	|
+| 9		|✅			|																			|
+| 10	|▶️			|																			|
 | 11	|			|																			|
 | 12	|			|																			|
 | 13	|			|																			|

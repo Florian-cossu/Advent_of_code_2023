@@ -7,7 +7,89 @@
         <textarea id="input"></textarea>
         <button type="button" onclick='strParse()'>Test</button>
         <script>
-            //SCRIPT HERE
+            function parseInput() {
+                var input = document.getElementById('input').value;
+                const lines = input.split('\n');
+                let expectedResult = 905;
+                let sum = 0;
+                let history = [];
+                let historyExtrapolation = [];
+
+                for (let line of lines) {
+                    let hist = line.split(/\s+/).map(Number);
+                    history.push(hist);
+                }
+
+                for (let data of history) {
+                    historyExtrapolation.push(extrapolateValues(data));
+                }
+
+                for (let extrapolation of historyExtrapolation) {
+                    sum += parseExtrapolation(extrapolation);
+                }
+
+                //console.log(historyExtrapolation);
+                displayResult(sum, expectedResult);
+            }
+
+            function parseExtrapolation(arr) {
+                for (let i = arr.length - 2; i > 0; i--) {
+                    let previous = arr[i - 1]
+                    previous.unshift(previous[0] - arr[i][0]);
+                }
+                return arr[0][0];
+            }
+
+            function extrapolateValues(arr) {
+                let newArr = [];
+                let arrCopy = [];
+
+                newArr.push(arr);
+                do {
+                    arrCopy = arr;
+                    arr = [];
+                    for (let i = arrCopy.length - 1; i > 0; i--) {
+                        arr.push(arrCopy[i] - arrCopy[i - 1]);
+                    }
+                    newArr.push(arr.reverse());
+                } while (!zeroCheck(arr))
+                //console.log(newArr);
+                return newArr;
+            }
+
+            function zeroCheck(arr) {
+                let result = true;
+                for (let i = 0; i < arr.length - 1; i++) {
+                    if (arr[i] != 0) {
+                        result = false;
+                        break;
+                    }
+                }
+                return result ? true : false;
+            }
+
+            function displayResult(result, expectedResult) {
+                // Get the resultDisplay div element
+                let resultDisplay = document.getElementById('resultDisplay');
+
+                // Check if there's already a result element
+                let resultElement = resultDisplay.querySelector('pre');
+
+                if (resultElement) {
+                    // If the element exists, update its text content
+                    resultElement.textContent = `Result: ${result}\nExpected result: ${expectedResult}\nDifference: ${expectedResult - result}`;
+                } else {
+                    // If the element doesn't exist, create a new <p> element
+                    resultElement = document.createElement('pre');
+
+                    // Set the text content of the <p> element to the result
+                    resultElement.textContent = `Result: ${result}\nExpected result: ${expectedResult}\nDifference: ${expectedResult - result}`;
+
+                    // Append the <p> element to the resultDisplay div
+                    resultDisplay.appendChild(resultElement);
+                }
+            }
+
         </script>
         <div id="resultDisplay">
             <!-- Result display -->
