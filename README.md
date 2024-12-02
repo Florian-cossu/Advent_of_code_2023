@@ -22,7 +22,7 @@ Since I am a Javascript noob I decided to try and do this challenge in JS to get
 ## Who are you?
 I'm not a developper. I'm a linguist.
 
-## Current progress ![](https://geps.dev/progress/25)
+## Current progress ![](https://geps.dev/progress/40)
 |Day	|Status		| Comments																	|
 |----	|---		|------																		|
 | [1](Day_01)		|✅			|																			|
