@@ -26,15 +26,15 @@ I'm not a developper. I'm a linguist.
 |Day	|Status		| Comments																	|
 |----	|---		|------																		|
 | [1](Day_01)		|✅			|																			|
-| 2		|✅			|																			|
-| 3		|✅			|																			|
-| 4		|✅			|																			|
-| 5		|⏸️		 	| Stuck on part II															|
-| 6		|✅			|																			|
-| 7		|✅			|																			|
-| 8		|✅			| Nice progress. Only relied on GPT to help me out with LCM calculations	|
-| 9		|✅			|																			|
-| 10	|▶️			|																			|
+| [2](Day_02)		|✅			|																			|
+| [3](Day_03)		|✅			|																			|
+| [4](Day_04)		|✅			|																			|
+| [5](Day_05)		|⏸️		 	| Stuck on part II															|
+| [6](Day_06)		|✅			|																			|
+| [7](Day_07)		|✅			|																			|
+| [8](Day_08)		|✅			| Nice progress. Only relied on GPT to help me out with LCM calculations	|
+| [9](Day_09)		|✅			|																			|
+| [10](Day_10)	|▶️			|																			|
 | 11	|			|																			|
 | 12	|			|																			|
 | 13	|			|																			|
