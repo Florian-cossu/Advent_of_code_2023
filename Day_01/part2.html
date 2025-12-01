@@ -1,0 +1,89 @@
+<doctype html>
+
+    <head>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <button type="button" onclick='strParse()'>Test</button>
+        <script>
+            function strParse() {
+                let sum = 0;
+                var inputSrc = document.getElementById('input').value;
+                console.log(inputSrc);
+
+                // Split the input into lines
+                var strArr = inputSrc.split('\n').map(line => {
+                    // Extract all digits from the line using a regular expression
+                    let processedLine = strToInts(line)
+                    var digits = processedLine.match(/\d/g);
+
+                    // If digits were found, extract the first and last digits
+                    // If there's only one digit, use it for both first and last
+                    // Otherwise, return an empty string
+                    if (digits && digits.length >= 1) {
+                        sum += (parseInt(digits.length === 1 ? digits[0] + digits[0] : digits[0] + digits[digits.length - 1], 10));
+                        return digits.length === 1 ? digits[0] + digits[0] : digits[0] + digits[digits.length - 1];
+                    }
+                });
+
+                resultDisplay(sum);
+                console.log("result " + strArr + "\nSum = " + sum);
+            }
+
+            function strToInts(line) {
+                const init = line;
+                
+                const patterns = [
+                    "zerone", "oneight", "twone", "eightwo", "eighthree", 
+                    "threight", "fiveight", "nineight",
+                    "zero", "one", "two", "three", "four", "five", 
+                    "six", "seven", "eight", "nine"
+                ];
+                
+                const replacements = {
+                    "zerone": '01',
+                    "zero": '0',
+                    "oneight": '18',
+                    "one": '1',
+                    "eightwo": '82',
+                    "twone": '21',
+                    "two": '2',
+                    "eighthree": '83',
+                    "threight": '38',
+                    "three": '3',
+                    "four": '4',
+                    "fiveight": '58',
+                    "five": '5',
+                    "six": '6',
+                    "seven": '7',
+                    "eight": '8',
+                    "nineight": '98',
+                    "nine": '9'
+                };
+                
+                const regex = new RegExp(patterns.join('|'), 'g');
+                
+                line = line.replace(regex, match => replacements[match]);
+                
+                console.log({init, line});
+                return line;
+            }
+
+            function resultDisplay(input, id = '#resultDisplay') {
+                var resultDiv = document.querySelector(id);
+                // Clear existing content
+                resultDiv.innerHTML = '';
+
+                // Create a p element for each line in the array
+                var result = document.createElement('p');
+                result.textContent = input;
+
+                // Append the p element to the resultDiv
+                resultDiv.appendChild(result);
+            }
+        </script>
+        <div id="resultDisplay">
+            <!-- Result display -->
+        </div>
+    </body>
